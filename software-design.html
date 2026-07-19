@@ -50,12 +50,21 @@
         { name: "KennelManager.java", content: "// Nilaris Roberts\n// CS 499 Milestone Two Enhancement\n// KennelManager class: New class that owns space allocation for the\n// kennel. Replaces the static class-level counters that previously lived\n// inside Pet, removing shared mutable state from the Pet hierarchy and\n// making space tracking testable and safe to extend (e.g. multiple\n// concurrent check-ins, different space pools) without touching Pet itself.\n\npublic class KennelManager {\n    private int totalDogSpaces;\n    private int totalCatSpaces;\n    private int availableDogSpaces;\n    private int availableCatSpaces;\n\n    // Constructor to initialize the kennel's total capacity\n    public KennelManager(int totalDogSpaces, int totalCatSpaces) {\n        if (totalDogSpaces < 0 || totalCatSpaces < 0) {\n            throw new IllegalArgumentException(\"Total spaces cannot be negative.\");\n        }\n        this.totalDogSpaces = totalDogSpaces;\n        this.totalCatSpaces = totalCatSpaces;\n        this.availableDogSpaces = totalDogSpaces;\n        this.availableCatSpaces = totalCatSpaces;\n    }\n\n    // Assigns a space to a pet based on its concrete type, using polymorphism\n    // rather than a petType string check. Returns the assigned space number,\n    // or -1 if no space is available.\n    public int assignSpace(Pet pet) {\n        if (pet instanceof Dog) {\n            return assignDogSpace((Dog) pet);\n        } else if (pet instanceof Cat) {\n            return assignCatSpace((Cat) pet);\n        } else {\n            throw new IllegalArgumentException(\"Unrecognized pet type: cannot assign space.\");\n        }\n    }\n\n    private int assignDogSpace(Dog dog) {\n        if (availableDogSpaces <= 0) {\n            return -1; // No space available\n        }\n        availableDogSpaces--;\n        int spaceNumber = totalDogSpaces - availableDogSpaces;\n        dog.setDogSpaceNumber(spaceNumber);\n        return spaceNumber;\n    }\n\n    private int assignCatSpace(Cat cat) {\n        if (availableCatSpaces <= 0) {\n            return -1; // No space available\n        }\n        availableCatSpaces--;\n        int spaceNumber = totalCatSpaces - availableCatSpaces;\n        cat.setCatSpaceNumber(spaceNumber);\n        return spaceNumber;\n    }\n\n    // Releases a space back to the pool, e.g. on checkout\n    public void releaseSpace(Pet pet) {\n        if (pet instanceof Dog && availableDogSpaces < totalDogSpaces) {\n            availableDogSpaces++;\n            ((Dog) pet).setDogSpaceNumber(-1);\n        } else if (pet instanceof Cat && availableCatSpaces < totalCatSpaces) {\n            availableCatSpaces++;\n            ((Cat) pet).setCatSpaceNumber(-1);\n        }\n    }\n\n    // Getter methods for remaining capacity\n    public int getAvailableDogSpaces() {\n        return availableDogSpaces;\n    }\n\n    public int getAvailableCatSpaces() {\n        return availableCatSpaces;\n    }\n}\n" }
       ];
 
-      iframe.addEventListener('load', function () {
+      function sendFiles() {
         iframe.contentWindow.postMessage({
           eventType: 'populateCode',
           language: 'java',
           files: files
         }, '*');
+      }
+
+      // OneCompiler's internal app isn't always ready the instant the
+      // iframe fires 'load', so resend a few times over the first couple
+      // seconds. postMessage is idempotent here, harmless to repeat.
+      iframe.addEventListener('load', function () {
+        [300, 800, 1500, 2500, 4000].forEach(function (delay) {
+          setTimeout(sendFiles, delay);
+        });
       });
     })();
   </script>
@@ -94,7 +103,7 @@
     </div>
   </div>
 
-  <p>Prefer to read it as plain files? The full source, including the pre-enhancement originals, is in the <a href="https://github.com/ninirob/CS465-FullStack" target="_blank" rel="noopener">GitHub repository</a>.</p>
+  <p>Prefer to read it as plain files? The full source, including the pre-enhancement originals, is in the <a href="https://github.com/ninirob/CS499_Capstone_Portfolio" target="_blank" rel="noopener">GitHub repository</a>.</p>
 </main>
 
 <footer>
