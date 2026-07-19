@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code Review — Nilaris Roberts</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <a href="index.html" class="brand">Nilaris Roberts <span>/ CS499</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="code-review.html" class="active">Code Review</a></li>
+    <li><a href="software-design.html">Software Design</a></li>
+    <li><a href="algorithms.html">Algorithms</a></li>
+    <li><a href="databases.html">Databases</a></li>
+  </ul>
+</nav>
+
+<main>
+  <p class="eyebrow">Milestone One</p>
+  <h1>Code Review</h1>
+  <p class="lede">A walkthrough of all three artifacts as they stood before enhancement: a Java pet-boarding application, a CIFAR-10 image classification CNN, and a relational RMA database. For each, I trace the existing structure, identify concrete issues, and outline the plan for enhancement.</p>
+
+  <!--
+    REPLACE THIS: Drop your video file into the assets/ folder in this repo
+    and name it code-review.mp4 (or update the src below to match whatever
+    you name it). Keep it under 100 MB, GitHub's hard file size limit.
+  -->
+  <div class="video-frame">
+    <video controls preload="metadata" style="width: 100%; height: 100%; position: absolute; inset: 0;">
+      <source src="assets/code-review.mp4" type="video/mp4">
+      Your browser doesn't support embedded video. <a href="assets/code-review.mp4">Download the video directly</a> instead.
+    </video>
+  </div>
+
+  <h2>What the review covers</h2>
+  <div class="card-grid">
+    <div class="card">
+      <p class="eyebrow">Software Design</p>
+      <h3>Pet BAG Java Application</h3>
+      <p>A constructor mismatch and a missing method, the result of two files from separate assignments never being integrated.</p>
+    </div>
+    <div class="card">
+      <p class="eyebrow">Algorithms</p>
+      <h3>CIFAR-10 CNN Notebook</h3>
+      <p>A silent Conv2D argument bug affecting stride behavior, and a stale evaluation variable masking the augmented model's real results.</p>
+    </div>
+    <div class="card">
+      <p class="eyebrow">Databases</p>
+      <h3>Quantigration RMA Database</h3>
+      <p>Literal-value queries with no parameterization, hardcoded file paths, and no least-privilege access control.</p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  CS 499 Capstone &middot; Southern New Hampshire University &middot; Nilaris Roberts
+</footer>
+
+</body>
+</html>
