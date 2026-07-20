@@ -22,9 +22,34 @@
 <main>
   <p class="eyebrow">Category Two</p>
   <h1>Algorithms &amp; Data Structures</h1>
-  <span class="badge submitted">Milestone Submitted</span>
-  <p class="lede">A CIFAR-10 image classification CNN, originally built for CS 370, enhanced with batch normalization and ReduceLROnPlateau learning rate scheduling, evaluated with a controlled before-and-after convergence comparison.</p>
-  <p>The final enhancement, narrative, and notebook will be published here once instructor feedback has been incorporated and the artifact is polished for final submission.</p>
+  <span class="badge submitted">Live &mdash; Milestone Submitted</span>
+  <p class="lede">A CIFAR-10 image classification CNN, originally built for CS 370, enhanced with batch normalization and ReduceLROnPlateau learning rate scheduling, and evaluated with a controlled before-and-after convergence comparison.</p>
+
+  <h2>Before &amp; after</h2>
+
+  <h3>Before enhancement</h3>
+  <p>The original notebook carried two bugs that never surfaced as errors, only as quietly wrong results. A convolutional layer was written as Conv2D(64, 3, 3), which Keras parses as a kernel size of 3 with a stride of 3, rather than the intended (3,3) kernel with default stride. That silently broke the layer's downsampling and dropped the padding='same' every sibling layer used. Separately, the code meant to report the augmented model's test results had its model.evaluate() call commented out, so the printed accuracy and loss were actually leftover values from an earlier baseline model, not the model that had just finished training.</p>
+
+  <h3>After enhancement</h3>
+  <p>Both bugs are fixed. The deeper network is now built through a single reusable function that can be instantiated with or without batch normalization, which made it possible to isolate exactly one variable, batch normalization plus a ReduceLROnPlateau learning rate schedule, and run a controlled before-and-after comparison on identical data and architecture. A third bug turned up along the way: a single augmented-data generator was being reused across two separate training runs, and Keras's newer data-handling layer doesn't reliably treat that generator as an infinite stream across repeated fit() calls the way older versions did, so some epochs were silently training on only a handful of batches. That's fixed by wrapping the generator in a tf.data.Dataset with .repeat() and giving each model its own independent dataset instance.</p>
+
+  <h3>What the results actually showed</h3>
+  <p>Once training was running correctly, the enhanced model scored 66.0% test accuracy against the unenhanced model's 69.2%, with a higher test loss as well, 1.010 versus 0.908. Rather than treat that as a failure to write around, the honest read is in the training logs: batch normalization in this architecture sits directly in the same block as dropout, a combination with documented research showing it can destabilize training, and the learning rate schedule didn't trigger its first drop until epoch 19 of 20, leaving almost no time to benefit from it before training ended. Neither model had fully converged by epoch 20, so this comparison is a snapshot mid-training rather than a final verdict on the approach. The result is a genuine finding, not a bug, and it's a reminder that a well-regarded technique still has to be evaluated in context rather than assumed to help.</p>
+
+  <h2>Full notebook</h2>
+  <p>The complete executed notebook, including the convergence comparison plot and all training output, is embedded below.</p>
+
+  <div style="border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin: 1.5rem 0 3rem;">
+    <iframe
+      src="assets/cifar10-notebook.html"
+      width="100%"
+      height="800px"
+      frameBorder="0"
+      title="CIFAR-10 CNN enhanced notebook, full executed output">
+    </iframe>
+  </div>
+
+  <p>Prefer to read it as a plain file? The full notebook, including the pre-enhancement original, is in the <a href="https://github.com/ninirob/CS499_Capstone_Portfolio" target="_blank" rel="noopener">GitHub repository</a>.</p>
 </main>
 
 <footer>
