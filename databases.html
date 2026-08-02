@@ -1,13 +1,135 @@
+
+
+Databases · HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Databases — Nilaris Roberts</title>
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Databases — Nilaris Roberts</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .narrative-section {
+      margin-top: 3rem;
+    }
+ 
+    .narrative-section h2 {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      font-weight: 500;
+      color: var(--text);
+      margin: 0 0 0.8rem;
+    }
+ 
+    .narrative-section p {
+      color: var(--muted);
+      max-width: 65ch;
+      margin-bottom: 1rem;
+    }
+ 
+    .enhancement-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+ 
+    .enhancement-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      font-size: 0.93rem;
+      color: var(--muted);
+      max-width: 60ch;
+    }
+ 
+    .enhancement-list li::before {
+      content: '';
+      display: block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--teal);
+      margin-top: 0.5rem;
+      flex-shrink: 0;
+    }
+ 
+    .file-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.8rem;
+      margin: 1.2rem 0 2rem;
+    }
+ 
+    .file-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1rem 1.2rem;
+      transition: border-color 0.25s ease;
+    }
+ 
+    .file-card:hover {
+      border-color: var(--teal);
+    }
+ 
+    .file-card .file-name {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--amber);
+      margin-bottom: 0.3rem;
+    }
+ 
+    .file-card .file-desc {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin: 0;
+    }
+ 
+    .outcomes-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin: 1rem 0 2rem;
+    }
+ 
+    .outcome-item {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      max-width: 65ch;
+    }
+ 
+    .outcome-tag {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--teal);
+      padding: 0.2rem 0.55rem;
+      border-radius: 3px;
+      flex-shrink: 0;
+      margin-top: 0.15rem;
+    }
+ 
+    .outcome-text {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin: 0;
+    }
+ 
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 2.5rem 0;
+    }
+  </style>
 </head>
 <body>
-
+ 
 <nav class="site-nav">
   <a href="index.html" class="brand">Nilaris Roberts <span>/ CS499</span></a>
   <ul class="nav-links">
@@ -18,18 +140,101 @@
     <li><a href="databases.html" class="active">Databases</a></li>
   </ul>
 </nav>
-
+ 
 <main>
   <p class="eyebrow">Category Three</p>
   <h1>Databases</h1>
-  <span class="badge in-progress">Planned</span>
-  <p class="lede">The Quantigration RMA database, originally built for DAD 220, moving toward a live Python connection, environment-based credential management, a least-privilege database user, and parameterized queries in place of literal-value statements.</p>
-  <p>The final enhancement, narrative, and repository link will be published here once this milestone is complete.</p>
+  <span class="badge submitted">Milestone Submitted</span>
+ 
+  <p class="lede">The Quantigration RMA database, originally built for DAD 220, enhanced with a least-privilege MySQL user, environment-based credential management, a portable Python data loader, and parameterized CRUD queries wrapped in transactions.</p>
+ 
+  <hr class="divider">
+ 
+  <!-- Artifact Description -->
+  <section class="narrative-section">
+    <h2>Artifact Description</h2>
+    <p>The Quantigration RMA (Return Merchandise Authorization) database was originally created during DAD 220: Introduction to Structured Database Environments. It models a fictional networking equipment company's return process across three related tables: Customers, Orders, and RMA. The original artifact included a full schema with primary and foreign key constraints, a Collaborators view, and a set of raw SQL CRUD operations. All original work was completed inside a Codio cloud environment using MySQL.</p>
+  </section>
+ 
+  <hr class="divider">
+ 
+  <!-- Enhancements -->
+  <section class="narrative-section">
+    <h2>What Was Improved</h2>
+    <p>Two core weaknesses drove this enhancement. The original data import relied on <code style="font-family: var(--font-mono); font-size: 0.85em; color: var(--amber);">LOAD DATA INFILE</code> statements hardcoded to Codio's file system, making the artifact entirely non-portable. All CRUD operations were also written as raw SQL strings with no credential management or SQL injection protection.</p>
+ 
+    <ul class="enhancement-list">
+      <li>Created a least-privilege MySQL user (<code style="font-family: var(--font-mono); font-size: 0.85em; color: var(--amber);">collaborator_viewer</code>) with SELECT access scoped exclusively to the Collaborators view, with no access to base tables and no write privileges anywhere in the database.</li>
+      <li>Moved all database credentials into a <code style="font-family: var(--font-mono); font-size: 0.85em; color: var(--amber);">.env</code> file managed by <code style="font-family: var(--font-mono); font-size: 0.85em; color: var(--amber);">python-dotenv</code>, excluded from version control via <code style="font-family: var(--font-mono); font-size: 0.85em; color: var(--amber);">.gitignore</code> so no real credentials appear in any published file.</li>
+      <li>Replaced the Codio-only <code style="font-family: var(--font-mono); font-size: 0.85em; color: var(--amber);">LOAD DATA INFILE</code> statements with a portable Python data loader using <code style="font-family: var(--font-mono); font-size: 0.85em; color: var(--amber);">mysql-connector-python</code> and parameterized <code style="font-family: var(--font-mono); font-size: 0.85em; color: var(--amber);">executemany</code> calls.</li>
+      <li>Rewrote all CRUD operations as parameterized Python functions, separating query structure from data values at every point to eliminate SQL injection risk.</li>
+      <li>Wrapped multi-step write operations in explicit transactions so that a failure in either step rolls back the entire operation rather than leaving the database in an inconsistent state.</li>
+    </ul>
+  </section>
+ 
+  <hr class="divider">
+ 
+  <!-- Files -->
+  <section class="narrative-section">
+    <h2>Enhancement Files</h2>
+    <div class="file-grid">
+      <div class="file-card">
+        <div class="file-name">least_privilege_user.sql</div>
+        <p class="file-desc">Creates the collaborator_viewer MySQL user with view-only SELECT access.</p>
+      </div>
+      <div class="file-card">
+        <div class="file-name">db_connection.py</div>
+        <p class="file-desc">Loads .env credentials and opens a MySQL connection via mysql-connector-python.</p>
+      </div>
+      <div class="file-card">
+        <div class="file-name">data_loader.py</div>
+        <p class="file-desc">Portable replacement for LOAD DATA INFILE. Inserts sample data using parameterized executemany wrapped in a transaction.</p>
+      </div>
+      <div class="file-card">
+        <div class="file-name">crud_operations.py</div>
+        <p class="file-desc">Full CRUD cycle rewritten as parameterized Python functions with transaction support on all write operations.</p>
+      </div>
+    </div>
+  </section>
+ 
+  <hr class="divider">
+ 
+  <!-- Course Outcomes -->
+  <section class="narrative-section">
+    <h2>Course Outcomes</h2>
+    <p>This enhancement was planned specifically to address outcome five and advances outcomes three and four as well.</p>
+    <div class="outcomes-grid">
+      <div class="outcome-item">
+        <span class="outcome-tag">CS-499-03</span>
+        <p class="outcome-text">Reflected in the deliberate choice to prioritize security and portability over the simplicity of the original raw SQL approach, with trade-offs documented explicitly in the code.</p>
+      </div>
+      <div class="outcome-item">
+        <span class="outcome-tag">CS-499-04</span>
+        <p class="outcome-text">Demonstrated through the use of industry-standard tools including mysql-connector-python, python-dotenv, virtual environments, and transaction management.</p>
+      </div>
+      <div class="outcome-item">
+        <span class="outcome-tag">CS-499-05</span>
+        <p class="outcome-text">Met through a three-layer security approach: least-privilege access control at the database user level, environment-based credential management, and parameterized queries eliminating SQL injection risk across all CRUD operations.</p>
+      </div>
+    </div>
+  </section>
+ 
+  <hr class="divider">
+ 
+  <!-- Reflection -->
+  <section class="narrative-section">
+    <h2>Reflection</h2>
+    <p>One of the more unexpected parts of this enhancement was discovering how much IntelliJ IDEA Ultimate simplified the verification process. The built-in Database tool window provided a live visual grid of table contents after each operation, making it easy to confirm that data was landing correctly without switching contexts. Running individual SQL scripts against a specific data source and seeing row-level results in the same environment where the Python code was being written made iterative verification significantly faster than anything I had done in the original Codio environment.</p>
+    <p>One moment that reframed how I was thinking about this work was hitting MySQL's <code style="font-family: var(--font-mono); font-size: 0.85em; color: var(--amber);">secure-file-priv</code> restriction when running the original <code style="font-family: var(--font-mono); font-size: 0.85em; color: var(--amber);">LOAD DATA INFILE</code> statements locally. The error was not just an inconvenient obstacle — it was a live demonstration of exactly the problem the enhancement was designed to solve. MySQL's own security layer was blocking the original approach for the same reasons I was replacing it.</p>
+    <p>The main challenge was a password mismatch between the <code style="font-family: var(--font-mono); font-size: 0.85em; color: var(--amber);">.env</code> file and my actual MySQL root password, which surfaced an important distinction: IntelliJ's database connection and the Python script's connection are entirely independent. A working visual connection in the IDE does not guarantee that application-level credentials are correct. Diagnosing this reinforced that credential management deserves deliberate verification during setup, not just during a security review after the fact.</p>
+  </section>
+ 
 </main>
-
+ 
 <footer>
   CS 499 Capstone &middot; Southern New Hampshire University &middot; Nilaris Roberts
 </footer>
-
+ 
 </body>
 </html>
+ 
