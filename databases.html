@@ -1,6 +1,3 @@
-
-
-Databases · HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,10 +6,8 @@ Databases · HTML
   <title>Databases — Nilaris Roberts</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
-    .narrative-section {
-      margin-top: 3rem;
-    }
- 
+    /* ── Narrative sections ── */
+    .narrative-section { margin-top: 3rem; }
     .narrative-section h2 {
       font-family: var(--font-display);
       font-size: 1.35rem;
@@ -20,116 +15,342 @@ Databases · HTML
       color: var(--text);
       margin: 0 0 0.8rem;
     }
- 
     .narrative-section p {
       color: var(--muted);
       max-width: 65ch;
       margin-bottom: 1rem;
     }
- 
+    .divider { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+
     .enhancement-list {
-      list-style: none;
-      padding: 0;
-      margin: 0 0 1.2rem;
+      list-style: none; padding: 0; margin: 0 0 1.2rem;
+      display: flex; flex-direction: column; gap: 0.6rem;
+    }
+    .enhancement-list li {
+      display: flex; align-items: flex-start; gap: 0.75rem;
+      font-size: 0.93rem; color: var(--muted); max-width: 62ch;
+    }
+    .enhancement-list li::before {
+      content: ''; display: block; width: 6px; height: 6px;
+      border-radius: 50%; background: var(--teal);
+      margin-top: 0.5rem; flex-shrink: 0;
+    }
+
+    .outcomes-grid { display: flex; flex-direction: column; gap: 0.75rem; margin: 1rem 0 2rem; }
+    .outcome-item { display: flex; gap: 1rem; align-items: flex-start; max-width: 65ch; }
+    .outcome-tag {
+      font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.04em;
+      text-transform: uppercase; color: var(--bg); background: var(--teal);
+      padding: 0.2rem 0.55rem; border-radius: 3px; flex-shrink: 0; margin-top: 0.15rem;
+    }
+    .outcome-text { font-size: 0.9rem; color: var(--muted); margin: 0; }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.85em;
+      color: var(--amber);
+    }
+
+    /* ── Interactive label ── */
+    .interactive-label {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin: 3rem 0 1rem;
       display: flex;
-      flex-direction: column;
+      align-items: center;
       gap: 0.6rem;
     }
- 
-    .enhancement-list li {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.75rem;
-      font-size: 0.93rem;
-      color: var(--muted);
-      max-width: 60ch;
-    }
- 
-    .enhancement-list li::before {
+    .interactive-label::after {
       content: '';
-      display: block;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--teal);
-      margin-top: 0.5rem;
-      flex-shrink: 0;
+      flex: 1;
+      height: 1px;
+      background: var(--border);
     }
- 
-    .file-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 0.8rem;
-      margin: 1.2rem 0 2rem;
-    }
- 
-    .file-card {
+
+    /* ── Schema Explorer ── */
+    .schema-explorer {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 6px;
-      padding: 1rem 1.2rem;
-      transition: border-color 0.25s ease;
+      padding: 1.5rem;
+      margin-bottom: 0.5rem;
     }
- 
-    .file-card:hover {
-      border-color: var(--teal);
+
+    .schema-explorer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.2rem;
     }
- 
-    .file-card .file-name {
+
+    .schema-explorer-header h3 {
       font-family: var(--font-mono);
-      font-size: 0.8rem;
-      color: var(--amber);
-      margin-bottom: 0.3rem;
-    }
- 
-    .file-card .file-desc {
       font-size: 0.82rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
       color: var(--muted);
       margin: 0;
     }
- 
-    .outcomes-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      margin: 1rem 0 2rem;
-    }
- 
-    .outcome-item {
-      display: flex;
-      gap: 1rem;
-      align-items: flex-start;
-      max-width: 65ch;
-    }
- 
-    .outcome-tag {
+
+    .schema-hint {
       font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .schema-tables {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 0.8rem;
+    }
+
+    .schema-table {
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.2s ease;
+    }
+
+    .schema-table:hover { border-color: var(--teal); }
+    .schema-table.open { border-color: var(--teal); }
+
+    .schema-table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.7rem 1rem;
+      background: var(--bg);
+      user-select: none;
+    }
+
+    .schema-table-name {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .schema-table-name .view-tag {
+      font-size: 0.65rem;
+      color: var(--bg);
+      background: var(--amber);
+      padding: 0.1rem 0.4rem;
+      border-radius: 2px;
+      margin-left: 0.4rem;
+      vertical-align: middle;
+    }
+
+    .schema-chevron {
       font-size: 0.7rem;
+      color: var(--muted);
+      transition: transform 0.2s ease;
+    }
+    .schema-table.open .schema-chevron { transform: rotate(180deg); }
+
+    .schema-fields {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    .schema-table.open .schema-fields { max-height: 500px; }
+
+    .schema-field {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.45rem 1rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      gap: 0.5rem;
+    }
+
+    .schema-field:hover { background: var(--surface-hover); }
+
+    .field-left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .field-icon {
+      font-size: 0.65rem;
+      width: 14px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .field-icon.pk { color: var(--amber); }
+    .field-icon.fk { color: var(--teal); }
+    .field-icon.field { color: var(--muted); }
+
+    .field-name { color: var(--text); font-family: var(--font-mono); font-size: 0.78rem; }
+    .field-type { color: var(--muted); font-family: var(--font-mono); font-size: 0.72rem; }
+
+    .field-badge {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      padding: 0.1rem 0.4rem;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+    .field-badge.pk { background: rgba(232,169,76,0.15); color: var(--amber); }
+    .field-badge.fk { background: rgba(79,184,166,0.15); color: var(--teal); }
+    .field-badge.nn { background: rgba(139,147,161,0.12); color: var(--muted); }
+    .field-badge.check { background: rgba(139,147,161,0.12); color: var(--muted); }
+
+    /* ── SQL Simulator ── */
+    .sql-simulator {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 0.5rem;
+    }
+
+    .sql-simulator-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1.2rem;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sql-simulator-toolbar span {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .sql-run-btn {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
       letter-spacing: 0.04em;
       text-transform: uppercase;
       color: var(--bg);
       background: var(--teal);
-      padding: 0.2rem 0.55rem;
-      border-radius: 3px;
-      flex-shrink: 0;
-      margin-top: 0.15rem;
-    }
- 
-    .outcome-text {
-      font-size: 0.9rem;
-      color: var(--muted);
-      margin: 0;
-    }
- 
-    .divider {
       border: none;
+      padding: 0.4rem 1rem;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: opacity 0.2s ease, transform 0.15s ease;
+    }
+    .sql-run-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    .sql-run-btn:active { transform: translateY(0); }
+
+    .sql-input-area {
+      width: 100%;
+      padding: 1.2rem;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      line-height: 1.6;
+      resize: vertical;
+      min-height: 90px;
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    .sql-examples {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      padding: 0 1.2rem 1rem;
+    }
+
+    .sql-example-btn {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 0.3rem 0.7rem;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+      white-space: nowrap;
+    }
+    .sql-example-btn:hover { color: var(--amber); border-color: var(--amber); }
+
+    .sql-result-area {
       border-top: 1px solid var(--border);
-      margin: 2.5rem 0;
+      min-height: 60px;
+    }
+
+    .sql-result-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 1.2rem;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sql-result-bar span {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .sql-result-bar .result-count { color: var(--teal); }
+    .sql-result-bar .result-error { color: #e06c75; }
+
+    .sql-result-table-wrap {
+      overflow-x: auto;
+      padding: 0;
+    }
+
+    .sql-result-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+    }
+
+    .sql-result-table th {
+      text-align: left;
+      padding: 0.5rem 1rem;
+      color: var(--amber);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+      font-weight: 500;
+    }
+
+    .sql-result-table td {
+      padding: 0.45rem 1rem;
+      color: var(--text);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    .sql-result-table tr:last-child td { border-bottom: none; }
+    .sql-result-table tr:hover td { background: var(--surface-hover); }
+
+    .sql-empty {
+      padding: 1.5rem 1.2rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .sql-error-msg {
+      padding: 1rem 1.2rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: #e06c75;
     }
   </style>
 </head>
 <body>
- 
+
 <nav class="site-nav">
   <a href="index.html" class="brand">Nilaris Roberts <span>/ CS499</span></a>
   <ul class="nav-links">
@@ -140,65 +361,216 @@ Databases · HTML
     <li><a href="databases.html" class="active">Databases</a></li>
   </ul>
 </nav>
- 
+
 <main>
   <p class="eyebrow">Category Three</p>
   <h1>Databases</h1>
   <span class="badge submitted">Milestone Submitted</span>
- 
+
   <p class="lede">The Quantigration RMA database, originally built for DAD 220, enhanced with a least-privilege MySQL user, environment-based credential management, a portable Python data loader, and parameterized CRUD queries wrapped in transactions.</p>
- 
+
+  <!-- ── Schema Explorer ── -->
+  <p class="interactive-label">Schema Explorer</p>
+
+  <div class="schema-explorer">
+    <div class="schema-explorer-header">
+      <h3>Quantigration_RMA &mdash; Live Schema</h3>
+      <span class="schema-hint">Click any table to expand</span>
+    </div>
+    <div class="schema-tables">
+
+      <!-- Customers -->
+      <div class="schema-table" onclick="toggleTable(this)">
+        <div class="schema-table-header">
+          <span class="schema-table-name">Customers</span>
+          <span class="schema-chevron">▼</span>
+        </div>
+        <div class="schema-fields">
+          <div class="schema-field">
+            <div class="field-left">
+              <span class="field-icon pk">🔑</span>
+              <span class="field-name">CustomerID</span>
+            </div>
+            <div class="field-left">
+              <span class="field-type">INT</span>
+              <span class="field-badge pk">PK</span>
+            </div>
+          </div>
+          <div class="schema-field">
+            <div class="field-left"><span class="field-icon field">○</span><span class="field-name">FirstName</span></div>
+            <span class="field-type">VARCHAR(25)</span>
+          </div>
+          <div class="schema-field">
+            <div class="field-left"><span class="field-icon field">○</span><span class="field-name">LastName</span></div>
+            <span class="field-type">VARCHAR(25)</span>
+          </div>
+          <div class="schema-field">
+            <div class="field-left"><span class="field-icon field">○</span><span class="field-name">Street</span></div>
+            <span class="field-type">VARCHAR(50)</span>
+          </div>
+          <div class="schema-field">
+            <div class="field-left"><span class="field-icon field">○</span><span class="field-name">City</span></div>
+            <span class="field-type">VARCHAR(50)</span>
+          </div>
+          <div class="schema-field">
+            <div class="field-left"><span class="field-icon field">○</span><span class="field-name">State</span></div>
+            <span class="field-type">VARCHAR(25)</span>
+          </div>
+          <div class="schema-field">
+            <div class="field-left"><span class="field-icon field">○</span><span class="field-name">ZipCode</span></div>
+            <span class="field-type">VARCHAR(10)</span>
+          </div>
+          <div class="schema-field">
+            <div class="field-left"><span class="field-icon field">○</span><span class="field-name">Telephone</span></div>
+            <span class="field-type">VARCHAR(15)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Orders -->
+      <div class="schema-table" onclick="toggleTable(this)">
+        <div class="schema-table-header">
+          <span class="schema-table-name">Orders</span>
+          <span class="schema-chevron">▼</span>
+        </div>
+        <div class="schema-fields">
+          <div class="schema-field">
+            <div class="field-left"><span class="field-icon pk">🔑</span><span class="field-name">OrderID</span></div>
+            <div class="field-left"><span class="field-type">INT</span><span class="field-badge pk">PK</span></div>
+          </div>
+          <div class="schema-field">
+            <div class="field-left"><span class="field-icon fk">⇢</span><span class="field-name">CustomerID</span></div>
+            <div class="field-left"><span class="field-type">INT</span><span class="field-badge fk">FK</span></div>
+          </div>
+          <div class="schema-field">
+            <div class="field-left"><span class="field-icon field">○</span><span class="field-name">SKU</span></div>
+            <span class="field-type">VARCHAR(20)</span>
+          </div>
+          <div class="schema-field">
+            <div class="field-left"><span class="field-icon field">○</span><span class="field-name">Description</span></div>
+            <span class="field-type">VARCHAR(100)</span>
+          </div>
+          <div class="schema-field">
+            <div class="field-left"><span class="field-icon field">○</span><span class="field-name">OrderDate</span></div>
+            <div class="field-left"><span class="field-type">DATE</span><span class="field-badge nn">NOT NULL</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RMA -->
+      <div class="schema-table" onclick="toggleTable(this)">
+        <div class="schema-table-header">
+          <span class="schema-table-name">RMA</span>
+          <span class="schema-chevron">▼</span>
+        </div>
+        <div class="schema-fields">
+          <div class="schema-field">
+            <div class="field-left"><span class="field-icon pk">🔑</span><span class="field-name">RMAID</span></div>
+            <div class="field-left"><span class="field-type">INT</span><span class="field-badge pk">PK</span></div>
+          </div>
+          <div class="schema-field">
+            <div class="field-left"><span class="field-icon fk">⇢</span><span class="field-name">OrderID</span></div>
+            <div class="field-left"><span class="field-type">INT</span><span class="field-badge fk">FK</span></div>
+          </div>
+          <div class="schema-field">
+            <div class="field-left"><span class="field-icon field">○</span><span class="field-name">Status</span></div>
+            <div class="field-left"><span class="field-type">VARCHAR(50)</span><span class="field-badge check">CHECK</span></div>
+          </div>
+          <div class="schema-field">
+            <div class="field-left"><span class="field-icon field">○</span><span class="field-name">Step</span></div>
+            <span class="field-type">VARCHAR(50)</span>
+          </div>
+          <div class="schema-field">
+            <div class="field-left"><span class="field-icon field">○</span><span class="field-name">Reason</span></div>
+            <span class="field-type">VARCHAR(25)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Collaborators view -->
+      <div class="schema-table" onclick="toggleTable(this)">
+        <div class="schema-table-header">
+          <span class="schema-table-name">Collaborators <span class="view-tag">VIEW</span></span>
+          <span class="schema-chevron">▼</span>
+        </div>
+        <div class="schema-fields">
+          <div class="schema-field">
+            <div class="field-left"><span class="field-icon field">○</span><span class="field-name">CollaboratorID</span></div>
+            <span class="field-type">→ CustomerID</span>
+          </div>
+          <div class="schema-field">
+            <div class="field-left"><span class="field-icon field">○</span><span class="field-name">FirstName</span></div>
+            <span class="field-type">VARCHAR(25)</span>
+          </div>
+          <div class="schema-field">
+            <div class="field-left"><span class="field-icon field">○</span><span class="field-name">LastName</span></div>
+            <span class="field-type">VARCHAR(25)</span>
+          </div>
+          <div class="schema-field">
+            <div class="field-left"><span class="field-icon field">○</span><span class="field-name">City</span></div>
+            <span class="field-type">VARCHAR(50)</span>
+          </div>
+          <div class="schema-field">
+            <div class="field-left"><span class="field-icon field">○</span><span class="field-name">State</span></div>
+            <span class="field-type">VARCHAR(25)</span>
+          </div>
+          <div class="schema-field">
+            <div class="field-left"><span class="field-icon field">○</span><span class="field-name">Telephone</span></div>
+            <span class="field-type">VARCHAR(15)</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── SQL Simulator ── -->
+  <p class="interactive-label">SQL Simulator</p>
+
+  <div class="sql-simulator">
+    <div class="sql-simulator-toolbar">
+      <span>quantigration_rma &mdash; read-only sample data</span>
+      <button class="sql-run-btn" onclick="runQuery()">&#9654; Run</button>
+    </div>
+    <textarea class="sql-input-area" id="sqlInput" spellcheck="false"
+      placeholder="Type a SELECT query and hit Run...">SELECT * FROM Customers;</textarea>
+    <div class="sql-examples">
+      <button class="sql-example-btn" onclick="loadExample(0)">Framingham orders</button>
+      <button class="sql-example-btn" onclick="loadExample(1)">Massachusetts count</button>
+      <button class="sql-example-btn" onclick="loadExample(2)">RMA status lookup</button>
+      <button class="sql-example-btn" onclick="loadExample(3)">JOIN customers + orders</button>
+      <button class="sql-example-btn" onclick="loadExample(4)">Collaborators view</button>
+    </div>
+    <div class="sql-result-area" id="sqlResult">
+      <div class="sql-empty">Results will appear here.</div>
+    </div>
+  </div>
+
   <hr class="divider">
- 
+
   <!-- Artifact Description -->
   <section class="narrative-section">
     <h2>Artifact Description</h2>
     <p>The Quantigration RMA (Return Merchandise Authorization) database was originally created during DAD 220: Introduction to Structured Database Environments. It models a fictional networking equipment company's return process across three related tables: Customers, Orders, and RMA. The original artifact included a full schema with primary and foreign key constraints, a Collaborators view, and a set of raw SQL CRUD operations. All original work was completed inside a Codio cloud environment using MySQL.</p>
   </section>
- 
+
   <hr class="divider">
- 
+
   <!-- Enhancements -->
   <section class="narrative-section">
     <h2>What Was Improved</h2>
-    <p>Two core weaknesses drove this enhancement. The original data import relied on <code style="font-family: var(--font-mono); font-size: 0.85em; color: var(--amber);">LOAD DATA INFILE</code> statements hardcoded to Codio's file system, making the artifact entirely non-portable. All CRUD operations were also written as raw SQL strings with no credential management or SQL injection protection.</p>
- 
+    <p>Two core weaknesses drove this enhancement. The original data import relied on <code>LOAD DATA INFILE</code> statements hardcoded to Codio's file system, making the artifact entirely non-portable. All CRUD operations were also written as raw SQL strings with no credential management or SQL injection protection.</p>
     <ul class="enhancement-list">
-      <li>Created a least-privilege MySQL user (<code style="font-family: var(--font-mono); font-size: 0.85em; color: var(--amber);">collaborator_viewer</code>) with SELECT access scoped exclusively to the Collaborators view, with no access to base tables and no write privileges anywhere in the database.</li>
-      <li>Moved all database credentials into a <code style="font-family: var(--font-mono); font-size: 0.85em; color: var(--amber);">.env</code> file managed by <code style="font-family: var(--font-mono); font-size: 0.85em; color: var(--amber);">python-dotenv</code>, excluded from version control via <code style="font-family: var(--font-mono); font-size: 0.85em; color: var(--amber);">.gitignore</code> so no real credentials appear in any published file.</li>
-      <li>Replaced the Codio-only <code style="font-family: var(--font-mono); font-size: 0.85em; color: var(--amber);">LOAD DATA INFILE</code> statements with a portable Python data loader using <code style="font-family: var(--font-mono); font-size: 0.85em; color: var(--amber);">mysql-connector-python</code> and parameterized <code style="font-family: var(--font-mono); font-size: 0.85em; color: var(--amber);">executemany</code> calls.</li>
+      <li>Created a least-privilege MySQL user (<code>collaborator_viewer</code>) with SELECT access scoped exclusively to the Collaborators view, with no access to base tables and no write privileges anywhere in the database.</li>
+      <li>Moved all database credentials into a <code>.env</code> file managed by <code>python-dotenv</code>, excluded from version control via <code>.gitignore</code> so no real credentials appear in any published file.</li>
+      <li>Replaced <code>LOAD DATA INFILE</code> with a portable Python data loader using <code>mysql-connector-python</code> and parameterized <code>executemany</code> calls.</li>
       <li>Rewrote all CRUD operations as parameterized Python functions, separating query structure from data values at every point to eliminate SQL injection risk.</li>
       <li>Wrapped multi-step write operations in explicit transactions so that a failure in either step rolls back the entire operation rather than leaving the database in an inconsistent state.</li>
     </ul>
   </section>
- 
+
   <hr class="divider">
- 
-  <!-- Files -->
-  <section class="narrative-section">
-    <h2>Enhancement Files</h2>
-    <div class="file-grid">
-      <div class="file-card">
-        <div class="file-name">least_privilege_user.sql</div>
-        <p class="file-desc">Creates the collaborator_viewer MySQL user with view-only SELECT access.</p>
-      </div>
-      <div class="file-card">
-        <div class="file-name">db_connection.py</div>
-        <p class="file-desc">Loads .env credentials and opens a MySQL connection via mysql-connector-python.</p>
-      </div>
-      <div class="file-card">
-        <div class="file-name">data_loader.py</div>
-        <p class="file-desc">Portable replacement for LOAD DATA INFILE. Inserts sample data using parameterized executemany wrapped in a transaction.</p>
-      </div>
-      <div class="file-card">
-        <div class="file-name">crud_operations.py</div>
-        <p class="file-desc">Full CRUD cycle rewritten as parameterized Python functions with transaction support on all write operations.</p>
-      </div>
-    </div>
-  </section>
- 
-  <hr class="divider">
- 
+
   <!-- Course Outcomes -->
   <section class="narrative-section">
     <h2>Course Outcomes</h2>
@@ -218,23 +590,320 @@ Databases · HTML
       </div>
     </div>
   </section>
- 
+
   <hr class="divider">
- 
+
   <!-- Reflection -->
   <section class="narrative-section">
     <h2>Reflection</h2>
-    <p>One of the more unexpected parts of this enhancement was discovering how much IntelliJ IDEA Ultimate simplified the verification process. The built-in Database tool window provided a live visual grid of table contents after each operation, making it easy to confirm that data was landing correctly without switching contexts. Running individual SQL scripts against a specific data source and seeing row-level results in the same environment where the Python code was being written made iterative verification significantly faster than anything I had done in the original Codio environment.</p>
-    <p>One moment that reframed how I was thinking about this work was hitting MySQL's <code style="font-family: var(--font-mono); font-size: 0.85em; color: var(--amber);">secure-file-priv</code> restriction when running the original <code style="font-family: var(--font-mono); font-size: 0.85em; color: var(--amber);">LOAD DATA INFILE</code> statements locally. The error was not just an inconvenient obstacle — it was a live demonstration of exactly the problem the enhancement was designed to solve. MySQL's own security layer was blocking the original approach for the same reasons I was replacing it.</p>
-    <p>The main challenge was a password mismatch between the <code style="font-family: var(--font-mono); font-size: 0.85em; color: var(--amber);">.env</code> file and my actual MySQL root password, which surfaced an important distinction: IntelliJ's database connection and the Python script's connection are entirely independent. A working visual connection in the IDE does not guarantee that application-level credentials are correct. Diagnosing this reinforced that credential management deserves deliberate verification during setup, not just during a security review after the fact.</p>
+    <p>One of the more unexpected parts of this enhancement was discovering how much IntelliJ IDEA Ultimate simplified the verification process. The built-in Database tool window provided a live visual grid of table contents after each operation, making it easy to confirm that data was landing correctly without switching contexts.</p>
+    <p>One moment that reframed how I was thinking about this work was hitting MySQL's <code>secure-file-priv</code> restriction when running the original <code>LOAD DATA INFILE</code> statements locally. The error was not just an inconvenient obstacle — it was a live demonstration of exactly the problem the enhancement was designed to solve. MySQL's own security layer was blocking the original approach for the same reasons I was replacing it.</p>
+    <p>The main challenge was a password mismatch between the <code>.env</code> file and my actual MySQL root password, which surfaced an important distinction: IntelliJ's database connection and the Python script's connection are entirely independent. A working visual connection in the IDE does not guarantee that application-level credentials are correct. Diagnosing this reinforced that credential management deserves deliberate verification during setup, not just during a security review after the fact.</p>
   </section>
- 
+
 </main>
- 
+
 <footer>
   CS 499 Capstone &middot; Southern New Hampshire University &middot; Nilaris Roberts
 </footer>
- 
+
+<script>
+// ── Sample dataset ──
+const DB = {
+  Customers: [
+    { CustomerID: 100001, FirstName: 'James', LastName: 'Monroe', Street: '14 Elm Street', City: 'Framingham', State: 'Massachusetts', ZipCode: '01701', Telephone: '508-555-1001' },
+    { CustomerID: 100002, FirstName: 'Sandra', LastName: 'Ellison', Street: '88 Pine Ave', City: 'Woonsocket', State: 'Rhode Island', ZipCode: '02895', Telephone: '401-555-2002' },
+    { CustomerID: 100003, FirstName: 'Carlos', LastName: 'Rivera', Street: '200 Oak Blvd', City: 'Framingham', State: 'Massachusetts', ZipCode: '01702', Telephone: '508-555-3003' },
+    { CustomerID: 100004, FirstName: 'Luke', LastName: 'Skywalker', Street: '15 Maiden Lane', City: 'New York', State: 'New York', ZipCode: '10222', Telephone: '212-555-1234' },
+    { CustomerID: 100005, FirstName: 'Winston', LastName: 'Smith', Street: '123 Sycamore Street', City: 'Greensboro', State: 'North Carolina', ZipCode: '27401', Telephone: '919-555-6623' },
+    { CustomerID: 100006, FirstName: 'MaryAnne', LastName: 'Jenkins', Street: '1 Coconut Way', City: 'Jupiter', State: 'Florida', ZipCode: '33458', Telephone: '321-555-8907' },
+    { CustomerID: 100007, FirstName: 'Janet', LastName: 'Williams', Street: '55 Redondo Beach Blvd', City: 'Torrance', State: 'California', ZipCode: '90501', Telephone: '310-555-5678' },
+    { CustomerID: 100008, FirstName: 'Diana', LastName: 'Prince', Street: '1 Wonder Way', City: 'Boston', State: 'Massachusetts', ZipCode: '02101', Telephone: '617-555-9999' },
+  ],
+  Orders: [
+    { OrderID: 1204301, CustomerID: 100001, SKU: 'ADV-24-10C', Description: 'Advanced Switch 10GigE Copper 24 port', OrderDate: '2024-01-15' },
+    { OrderID: 1204302, CustomerID: 100002, SKU: 'ENT-48-10F', Description: 'Enterprise Switch 10GigE SFP+ 48 port', OrderDate: '2024-02-20' },
+    { OrderID: 1204303, CustomerID: 100003, SKU: 'ADV-48-10F', Description: 'Advanced Switch 10GigE Copper/Fiber 48 port', OrderDate: '2024-03-10' },
+    { OrderID: 1204304, CustomerID: 100001, SKU: 'ENT-24-10F', Description: 'Enterprise Switch 10GigE SFP+ 24 port', OrderDate: '2024-04-05' },
+    { OrderID: 1204305, CustomerID: 100004, SKU: 'ADV-24-10C', Description: 'Advanced Switch 10GigE Copper 24 port', OrderDate: '2024-05-01' },
+    { OrderID: 1204306, CustomerID: 100005, SKU: 'ADV-48-10F', Description: 'Advanced Switch 10GigE Copper/Fiber 48 port', OrderDate: '2024-05-01' },
+    { OrderID: 1204307, CustomerID: 100006, SKU: 'ENT-24-10F', Description: 'Enterprise Switch 10GigE SFP+ 24 port', OrderDate: '2024-05-01' },
+    { OrderID: 1204308, CustomerID: 100007, SKU: 'ENT-48-10F', Description: 'Enterprise Switch 10GigE SFP+ 48 port', OrderDate: '2024-05-01' },
+    { OrderID: 1204309, CustomerID: 100008, SKU: 'ENT-24-10F', Description: 'Enterprise Switch 10GigE SFP+ 24 port', OrderDate: '2024-06-01' },
+  ],
+  RMA: [
+    { RMAID: 5001, OrderID: 1204301, Status: 'Pending', Step: 'Received', Reason: 'Damaged' },
+    { RMAID: 5002, OrderID: 1204302, Status: 'Approved', Step: 'Inspecting', Reason: 'Wrong Item' },
+    { RMAID: 5003, OrderID: 1204303, Status: 'Complete', Step: 'Credit Customer Account', Reason: 'Damaged' },
+    { RMAID: 5175, OrderID: 1204305, Status: 'Complete', Step: 'Credit Customer Account', Reason: 'Damaged' },
+  ],
+  Collaborators: [
+    { CollaboratorID: 100001, FirstName: 'James', LastName: 'Monroe', Street: '14 Elm Street', City: 'Framingham', State: 'Massachusetts', ZipCode: '01701', Telephone: '508-555-1001' },
+    { CollaboratorID: 100002, FirstName: 'Sandra', LastName: 'Ellison', Street: '88 Pine Ave', City: 'Woonsocket', State: 'Rhode Island', ZipCode: '02895', Telephone: '401-555-2002' },
+    { CollaboratorID: 100003, FirstName: 'Carlos', LastName: 'Rivera', Street: '200 Oak Blvd', City: 'Framingham', State: 'Massachusetts', ZipCode: '01702', Telephone: '508-555-3003' },
+    { CollaboratorID: 100004, FirstName: 'Luke', LastName: 'Skywalker', Street: '15 Maiden Lane', City: 'New York', State: 'New York', ZipCode: '10222', Telephone: '212-555-1234' },
+    { CollaboratorID: 100005, FirstName: 'Winston', LastName: 'Smith', Street: '123 Sycamore Street', City: 'Greensboro', State: 'North Carolina', ZipCode: '27401', Telephone: '919-555-6623' },
+    { CollaboratorID: 100006, FirstName: 'MaryAnne', LastName: 'Jenkins', Street: '1 Coconut Way', City: 'Jupiter', State: 'Florida', ZipCode: '33458', Telephone: '321-555-8907' },
+    { CollaboratorID: 100007, FirstName: 'Janet', LastName: 'Williams', Street: '55 Redondo Beach Blvd', City: 'Torrance', State: 'California', ZipCode: '90501', Telephone: '310-555-5678' },
+    { CollaboratorID: 100008, FirstName: 'Diana', LastName: 'Prince', Street: '1 Wonder Way', City: 'Boston', State: 'Massachusetts', ZipCode: '02101', Telephone: '617-555-9999' },
+  ]
+};
+
+// ── Schema toggle ──
+function toggleTable(el) {
+  el.classList.toggle('open');
+}
+
+// ── Example queries ──
+const EXAMPLES = [
+  `SELECT COUNT(*) AS FraminghamOrderCount\nFROM Customers\nJOIN Orders ON Customers.CustomerID = Orders.CustomerID\nWHERE Customers.City = 'Framingham' AND Customers.State = 'Massachusetts';`,
+  `SELECT COUNT(*) AS MassachusettsCustomerCount\nFROM Customers\nWHERE State = 'Massachusetts';`,
+  `SELECT Status, Step\nFROM RMA\nWHERE OrderID = 1204305;`,
+  `SELECT Customers.FirstName, Customers.LastName, Orders.SKU, Orders.OrderDate\nFROM Customers\nJOIN Orders ON Customers.CustomerID = Orders.CustomerID\nORDER BY Orders.OrderDate;`,
+  `SELECT * FROM Collaborators;`,
+];
+
+function loadExample(i) {
+  document.getElementById('sqlInput').value = EXAMPLES[i];
+}
+
+// ── Minimal SQL parser/executor ──
+function runQuery() {
+  const raw = document.getElementById('sqlInput').value.trim();
+  const resultArea = document.getElementById('sqlResult');
+
+  if (!raw) {
+    resultArea.innerHTML = '<div class="sql-empty">Type a query above and hit Run.</div>';
+    return;
+  }
+
+  try {
+    const result = executeSQL(raw);
+    renderResult(resultArea, result, raw);
+  } catch (e) {
+    resultArea.innerHTML = `
+      <div class="sql-result-bar"><span class="result-error">Error</span></div>
+      <div class="sql-error-msg">${e.message}</div>`;
+  }
+}
+
+function executeSQL(sql) {
+  const upper = sql.toUpperCase().trim();
+
+  // Block non-SELECT
+  if (!upper.startsWith('SELECT')) {
+    throw new Error('This simulator supports SELECT queries only. Write operations are handled server-side in the actual enhancement.');
+  }
+
+  // COUNT(*) queries
+  if (upper.includes('COUNT(*)')) {
+    return handleCount(sql);
+  }
+
+  // JOIN queries
+  if (upper.includes('JOIN')) {
+    return handleJoin(sql);
+  }
+
+  // Simple SELECT ... FROM table [WHERE ...]
+  return handleSimpleSelect(sql);
+}
+
+function getTableName(sql) {
+  const m = sql.match(/FROM\s+(\w+)/i);
+  if (!m) throw new Error('Could not parse table name from query.');
+  const name = m[1];
+  const key = Object.keys(DB).find(k => k.toLowerCase() === name.toLowerCase());
+  if (!key) throw new Error(`Unknown table or view: "${name}". Available: Customers, Orders, RMA, Collaborators.`);
+  return key;
+}
+
+function parseWhere(sql, row) {
+  const whereMatch = sql.match(/WHERE\s+(.+?)(?:ORDER BY|LIMIT|;|$)/is);
+  if (!whereMatch) return true;
+  const clause = whereMatch[1].trim();
+
+  // Handle AND conditions
+  const conditions = clause.split(/\s+AND\s+/i);
+  return conditions.every(cond => {
+    const m = cond.match(/(\w+)\s*=\s*'([^']*)'/i) || cond.match(/(\w+)\s*=\s*(\d+)/i);
+    if (!m) return true;
+    const col = m[1];
+    const val = m[2];
+    const rowVal = row[col];
+    if (rowVal === undefined) return true;
+    return String(rowVal).toLowerCase() === String(val).toLowerCase();
+  });
+}
+
+function handleSimpleSelect(sql) {
+  const tableName = getTableName(sql);
+  let rows = DB[tableName].filter(row => parseWhere(sql, row));
+
+  // ORDER BY
+  const orderMatch = sql.match(/ORDER BY\s+(\w+)(?:\s+(ASC|DESC))?/i);
+  if (orderMatch) {
+    const col = orderMatch[1];
+    const dir = (orderMatch[2] || 'ASC').toUpperCase();
+    rows = [...rows].sort((a, b) => {
+      const av = a[col], bv = b[col];
+      return dir === 'ASC' ? (av > bv ? 1 : -1) : (av < bv ? 1 : -1);
+    });
+  }
+
+  // LIMIT
+  const limitMatch = sql.match(/LIMIT\s+(\d+)/i);
+  if (limitMatch) rows = rows.slice(0, parseInt(limitMatch[1]));
+
+  // Columns
+  const colMatch = sql.match(/SELECT\s+(.+?)\s+FROM/is);
+  const colStr = colMatch ? colMatch[1].trim() : '*';
+
+  if (colStr === '*') {
+    return { columns: Object.keys(DB[tableName][0] || {}), rows };
+  }
+
+  const cols = colStr.split(',').map(c => c.trim());
+  const filteredRows = rows.map(row => {
+    const r = {};
+    cols.forEach(c => { if (row[c] !== undefined) r[c] = row[c]; });
+    return r;
+  });
+  return { columns: cols.filter(c => filteredRows[0] && filteredRows[0][c] !== undefined), rows: filteredRows };
+}
+
+function handleCount(sql) {
+  const aliasMatch = sql.match(/COUNT\(\*\)\s+AS\s+(\w+)/i);
+  const alias = aliasMatch ? aliasMatch[1] : 'COUNT(*)';
+
+  if (sql.toUpperCase().includes('JOIN')) {
+    // COUNT with JOIN
+    const joined = handleJoin(sql.replace(/COUNT\(\*\)\s+AS\s+\w+/i, '*').replace(/COUNT\(\*\)/i, '*'));
+    return { columns: [alias], rows: [{ [alias]: joined.rows.length }] };
+  }
+
+  const tableName = getTableName(sql);
+  const count = DB[tableName].filter(row => parseWhere(sql, row)).length;
+  return { columns: [alias], rows: [{ [alias]: count }] };
+}
+
+function handleJoin(sql) {
+  // Parse: SELECT cols FROM t1 JOIN t2 ON t1.col = t2.col WHERE ... ORDER BY ...
+  const fromMatch = sql.match(/FROM\s+(\w+)\s+(?:INNER\s+)?JOIN\s+(\w+)\s+ON\s+(\w+)\.(\w+)\s*=\s*(\w+)\.(\w+)/i);
+  if (!fromMatch) throw new Error('Could not parse JOIN. Try: SELECT ... FROM TableA JOIN TableB ON TableA.col = TableB.col');
+
+  const t1Name = Object.keys(DB).find(k => k.toLowerCase() === fromMatch[1].toLowerCase());
+  const t2Name = Object.keys(DB).find(k => k.toLowerCase() === fromMatch[2].toLowerCase());
+  if (!t1Name || !t2Name) throw new Error(`Unknown table in JOIN.`);
+
+  const joinCol1 = fromMatch[4];
+  const joinCol2 = fromMatch[6];
+
+  // Cross join then filter on join condition
+  let joined = [];
+  for (const r1 of DB[t1Name]) {
+    for (const r2 of DB[t2Name]) {
+      if (String(r1[joinCol1]) === String(r2[joinCol2])) {
+        const merged = {};
+        Object.entries(r1).forEach(([k, v]) => { merged[`${t1Name}.${k}`] = v; merged[k] = v; });
+        Object.entries(r2).forEach(([k, v]) => { merged[`${t2Name}.${k}`] = v; if (merged[k] === undefined) merged[k] = v; });
+        joined.push(merged);
+      }
+    }
+  }
+
+  // WHERE
+  const whereMatch = sql.match(/WHERE\s+(.+?)(?:ORDER BY|LIMIT|;|$)/is);
+  if (whereMatch) {
+    const clause = whereMatch[1].trim();
+    const conditions = clause.split(/\s+AND\s+/i);
+    joined = joined.filter(row => conditions.every(cond => {
+      const m = cond.match(/(?:\w+\.)?(\w+)\s*=\s*'([^']*)'/i) || cond.match(/(?:\w+\.)?(\w+)\s*=\s*(\d+)/i);
+      if (!m) return true;
+      const col = m[1];
+      const val = m[2];
+      return String(row[col] ?? '').toLowerCase() === String(val).toLowerCase();
+    }));
+  }
+
+  // ORDER BY
+  const orderMatch = sql.match(/ORDER BY\s+(?:\w+\.)?(\w+)(?:\s+(ASC|DESC))?/i);
+  if (orderMatch) {
+    const col = orderMatch[1];
+    const dir = (orderMatch[2] || 'ASC').toUpperCase();
+    joined = [...joined].sort((a, b) => {
+      const av = a[col], bv = b[col];
+      return dir === 'ASC' ? (av > bv ? 1 : -1) : (av < bv ? 1 : -1);
+    });
+  }
+
+  // LIMIT
+  const limitMatch = sql.match(/LIMIT\s+(\d+)/i);
+  if (limitMatch) joined = joined.slice(0, parseInt(limitMatch[1]));
+
+  // SELECT columns
+  const colMatch = sql.match(/SELECT\s+(.+?)\s+FROM/is);
+  const colStr = colMatch ? colMatch[1].trim() : '*';
+  if (colStr === '*' || colStr.toUpperCase().includes('COUNT')) {
+    const cols = joined.length > 0
+      ? Object.keys(joined[0]).filter(k => !k.includes('.'))
+      : [];
+    return { columns: cols, rows: joined.map(r => { const o = {}; cols.forEach(c => o[c] = r[c]); return o; }) };
+  }
+
+  const cols = colStr.split(',').map(c => {
+    const parts = c.trim().split('.');
+    return parts[parts.length - 1];
+  });
+  const filteredRows = joined.map(r => {
+    const o = {};
+    cols.forEach(c => { o[c] = r[c]; });
+    return o;
+  });
+  return { columns: cols, rows: filteredRows };
+}
+
+function renderResult(area, result, sql) {
+  const { columns, rows } = result;
+  const count = rows.length;
+  const countText = count === 1 ? '1 row' : `${count} rows`;
+
+  if (rows.length === 0) {
+    area.innerHTML = `
+      <div class="sql-result-bar">
+        <span>Query OK</span>
+        <span class="result-count">0 rows returned</span>
+      </div>
+      <div class="sql-empty">No matching records.</div>`;
+    return;
+  }
+
+  const headers = columns.map(c => `<th>${c}</th>`).join('');
+  const rowsHtml = rows.map(row =>
+    `<tr>${columns.map(c => `<td>${row[c] ?? 'NULL'}</td>`).join('')}</tr>`
+  ).join('');
+
+  area.innerHTML = `
+    <div class="sql-result-bar">
+      <span>Query OK</span>
+      <span class="result-count">${countText} returned</span>
+    </div>
+    <div class="sql-result-table-wrap">
+      <table class="sql-result-table">
+        <thead><tr>${headers}</tr></thead>
+        <tbody>${rowsHtml}</tbody>
+      </table>
+    </div>`;
+}
+
+// Run on Enter (Ctrl/Cmd + Enter)
+document.getElementById('sqlInput').addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    e.preventDefault();
+    runQuery();
+  }
+});
+</script>
+
 </body>
 </html>
- 
